@@ -6,7 +6,6 @@ key_vault_name=""
 vault_secret_name=""
 ado_organization=""
 ado_pool=""
-ado_project=""
 agent_count=1
 agent_run_once=1
 agent_name="agent"
@@ -60,9 +59,8 @@ while [[ "$#" -gt 0 ]]; do
   case $1 in
     --key_vault_name) key_vault_name="$2"; shift ;;
     --vault_secret_name) vault_secret_name="$2"; shift ;;
-    --ado_url) ado_url="$2"; shift ;;
+    --ado_organization) ado_organization="$2"; shift ;;
     --ado_pool) ado_pool="$2"; shift ;;
-    --ado_project) ado_project="$2"; shift ;;
     --agent_count) agent_count="$2"; shift ;;
     --agent_run_once) agent_run_once="$2"; shift ;;
     --agent_name) agent_name="$2"; shift ;;
@@ -72,7 +70,7 @@ while [[ "$#" -gt 0 ]]; do
   shift
 done
 
-if [[ -z "$key_vault_name" || -z "$vault_secret_name" || -z "$ado_url" || -z "$ado_pool" || -z "$ado_project" ]]; then
+if [[ -z "$key_vault_name" || -z "$vault_secret_name" || -z "$ado_organization" || -z "$ado_pool" ]]; then
   echo "Missing required arguments."
   return 1
 fi
