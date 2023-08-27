@@ -82,7 +82,7 @@ pat_token=$(get_azure_secret --vault-name $key_vault_name --secret-name $vault_s
 # Install Azure DevOps agent
 if [ $agent_count == 1 ]
 then
-  ./agent-setup.sh "${agent_name}-1" $pat_token $ado_organization $ado_pool $agent_run_once $agent_mtu
+  /tmp/azure-agent-self-hosted-toolkit/agent-setup.sh "${agent_name}-1" $pat_token $ado_organization $ado_pool $agent_run_once $agent_mtu
 else
-  ./batch-setup.sh 1 $agent_count $pat_token $ado_organization $ado_pool $agent_run_once $agent_mtu
+  /tmp/azure-agent-self-hosted-toolkit/batch-setup.sh 1 $agent_count $pat_token $ado_organization $ado_pool $agent_run_once $agent_mtu
 fi
