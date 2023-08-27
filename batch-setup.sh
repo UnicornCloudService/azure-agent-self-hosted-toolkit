@@ -23,5 +23,5 @@ fi
 
 echo "Setting up $AMOUNT agents starting with $START_FROM"
 for ((i = $START_FROM ; i < ($AMOUNT+$START_FROM) ; i++)); do
-  ./agent-setup.sh "$agent_name-$i" $AZP_TOKEN $AZP_ORGANIZATION $POOL $RUN_ONCE_MODE $DOCKER_NETWORK_MTU
+  /tmp/azure-agent-self-hosted-toolkit/agent-setup.sh "$agent_name-$i" $AZP_TOKEN $AZP_ORGANIZATION $POOL $RUN_ONCE_MODE $DOCKER_NETWORK_MTU
 done
