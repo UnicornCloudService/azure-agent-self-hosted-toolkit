@@ -8,7 +8,7 @@ ado_organization=""
 ado_pool=""
 agent_count=1
 agent_run_once=1
-agent_name="agent"
+agent_name=$(hostname)
 agent_mtu=1400
 
 # Function to get secret from Azure Key Vault using Managed Identity
