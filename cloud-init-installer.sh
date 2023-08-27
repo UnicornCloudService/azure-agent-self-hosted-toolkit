@@ -65,7 +65,6 @@ while [[ "$#" -gt 0 ]]; do
     --agent_run_once) agent_run_once="$2"; shift ;;
     --agent_name) agent_name="$2"; shift ;;
     --agent_mtu) agent_mtu="$2"; shift ;;
-    *) echo "Unknown parameter: $1"; return 1 ;;
   esac
   shift
 done
