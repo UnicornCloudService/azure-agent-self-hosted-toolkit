@@ -20,7 +20,7 @@ if [ -z "$AZP_TOKEN" ]; then
   exit 1
 fi
 
-if [ -z "$AZP_URL" ]; then
+if [ -z "$AZP_ORGANIZATION" ]; then
   echo "Please provide the azp url as the 3rd param"
   exit 1
 fi
