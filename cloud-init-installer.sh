@@ -54,6 +54,7 @@ get_azure_secret() {
   echo $secret
 }
 
+
 # Parse named arguments
 while [[ "$#" -gt 0 ]]; do
   case $1 in
@@ -65,13 +66,14 @@ while [[ "$#" -gt 0 ]]; do
     --agent_run_once) agent_run_once="$2"; shift ;;
     --agent_name) agent_name="$2"; shift ;;
     --agent_mtu) agent_mtu="$2"; shift ;;
+    *) echo "Unknown parameter: $1"; exit 1 ;;
   esac
   shift
 done
 
 if [[ -z "$key_vault_name" || -z "$vault_secret_name" || -z "$ado_organization" || -z "$ado_pool" ]]; then
   echo "Missing required arguments."
-  return 1
+  exit 1
 fi
 
 # Get Azure DevOps PAT token from Azure Key Vault
