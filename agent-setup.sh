@@ -59,7 +59,7 @@ chown $AGENT_USER:$AGENT_USER $AGENT_USER_HOME -R
 echo "configuring agent"
 # use ./config.sh --help to find more options
 # --replace to replace an agent with the same name (if we redeploy)
-su -c "cd $AGENT_INSTALL_DIR && ./config.sh --replace --unattended --acceptTeeEula --url "https://dev.azure.com/${AZP_ORGANIZATION}" --auth pat --token $AZP_TOKEN --pool $POOL --agent $AGENT_USER" $AGENT_USER
+su -c "cd $AGENT_INSTALL_DIR && ./config.sh --replace --unattended --acceptTeeEula --url "https://dev.azure.com/${AZP_ORGANIZATION}" --auth pat --token $AZP_TOKEN --pool $POOL --agent $AGENT_USER --runasservice" $AGENT_USER
 
 echo "Adding ENV variables for different aspects / fixes"
 # fix docker MTU or the networks created for the docker container will have the wrong (1500) MTA and thus
