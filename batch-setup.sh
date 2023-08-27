@@ -2,13 +2,13 @@
 
 set -e
 
-START_FROM=${1:-0}
+START_FROM=${1:-1}
 AMOUNT=$2
 AZP_TOKEN=$3
-POOL=$4
-RUN_ONCE_MODE=$5
-DOCKER_NETWORK_MTU=$6
-AGENT_VERSION=$7
+AZP_ORGANIZATION=$4
+POOL=$5
+RUN_ONCE_MODE=$6
+DOCKER_NETWORK_MTU=$7
 
 if [ -z "$AMOUNT" ]; then
   echo "Please provide the number of agents to setup as the first param"
@@ -22,5 +22,5 @@ fi
 
 echo "Setting up $AMOUNT agents starting with $START_FROM"
 for ((i = $START_FROM ; i < ($AMOUNT+$START_FROM) ; i++)); do
-  ./agent-setup.sh agent$i $AZP_TOKEN $POOL $RUN_ONCE_MODE $DOCKER_NETWORK_MTU $AGENT_VERSION
+  ./agent-setup.sh agent$i $AZP_TOKEN $AZP_ORGANIZATION $POOL $RUN_ONCE_MODE $DOCKER_NETWORK_MTU
 done

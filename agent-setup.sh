@@ -4,10 +4,11 @@ set -e
 
 AGENT_USER=$1
 AZP_TOKEN=$2
-POOL=${3:-Default}
-USE_RUNONCE=${4:-1}
-DOCKER_NETWORK_MTU=${5:-1500}
-AGENT_VERSION=${6:-"3.220.2"}
+AZP_ORGANIZATION=$3
+POOL=${4:-Default}
+USE_RUNONCE=${5:-1}
+DOCKER_NETWORK_MTU=${6:-1500}
+DOWNLOAD_URL="$(curl -s -L https://github.com/microsoft/azure-pipelines-agent/releases/latest | grep -i vsts-agent-linux-x64 | egrep -o 'https?://[^ "]+')"
 
 if [ -z "$AGENT_USER" ]; then
   echo "Please provide the agent name the first parameter param"
@@ -19,20 +20,25 @@ if [ -z "$AZP_TOKEN" ]; then
   exit 1
 fi
 
+if [ -z "$AZP_URL" ]; then
+  echo "Please provide the azp url as the 3rd param"
+  exit 1
+fi
+
 if [ -z "$POOL" ]; then
-  echo "Please provide the pool as the 3rd param"
+  echo "Please provide the pool as the 4rd param"
   exit 1
 fi
 
 
 if [ -z "$USE_RUNONCE" ]; then
-  echo "Please provide the run_once enable/disable (0/1) 4th param"
+  echo "Please provide the run_once enable/disable (0/1) 5th param"
   exit 1
 fi
 
 
 if [ -z "$DOCKER_NETWORK_MTU" ]; then
-  echo "Please provide the MTA as 5th param"
+  echo "Please provide the MTA as 6th param"
   exit 1
 fi
 
@@ -44,7 +50,7 @@ export AGENT_INSTALL_DIR=$AGENT_USER_HOME/agent
 
 echo "Downloading agent"
 mkdir -p $AGENT_INSTALL_DIR
-curl -f -o $AGENT_INSTALL_DIR/agent.tar.gz https://vstsagentpackage.azureedge.net/agent/$AGENT_VERSION/vsts-agent-linux-x64-$AGENT_VERSION.tar.gz
+curl -f -o $AGENT_INSTALL_DIR/agent.tar.gz $DOWNLOAD_URL
 cd $AGENT_INSTALL_DIR
 tar -xf agent.tar.gz
 rm -f $AGENT_INSTALL_DIR/agent.tar.gz
@@ -53,7 +59,7 @@ chown $AGENT_USER:$AGENT_USER $AGENT_USER_HOME -R
 echo "configuring agent"
 # use ./config.sh --help to find more options
 # --replace to replace an agent with the same name (if we redeploy)
-su -c "cd $AGENT_INSTALL_DIR && ./config.sh --replace --unattended --acceptTeeEula --url https://dev.azure.com/kontextwork --auth pat --token $AZP_TOKEN --pool $POOL --agent $AGENT_USER" $AGENT_USER
+su -c "cd $AGENT_INSTALL_DIR && ./config.sh --replace --unattended --acceptTeeEula --url "https://dev.azure.com/${AZP_ORGANIZATION}" --auth pat --token $AZP_TOKEN --pool $POOL --agent $AGENT_USER" $AGENT_USER
 
 echo "Adding ENV variables for different aspects / fixes"
 # fix docker MTU or the networks created for the docker container will have the wrong (1500) MTA and thus
@@ -81,5 +87,5 @@ if [ $USE_RUNONCE -gt 0 ]; then
 fi
 
 echo "Enabling and starting agent"
-systemctl enable vsts.agent.kontextwork.$POOL.$AGENT_USER
-systemctl start vsts.agent.kontextwork.$POOL.$AGENT_USER
+systemctl enable vsts.agent.$AZP_ORGANIZATION.$POOL.$AGENT_USER
+systemctl start vsts.agent.$AZP_ORGANIZATION.$POOL.$AGENT_USER
