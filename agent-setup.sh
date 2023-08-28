@@ -5,9 +5,10 @@ set -e
 AGENT_USER=$1
 AZP_TOKEN=$2
 AZP_ORGANIZATION=$3
-POOL=${4:-Default}
-USE_RUNONCE=${5:-1}
-DOCKER_NETWORK_MTU=${6:-1500}
+AZP_PROJECT=$4
+POOL=${5:-Default}
+USE_RUNONCE=${6:-1}
+DOCKER_NETWORK_MTU=${7:-1500}
 DOWNLOAD_URL="$(curl -s -L https://github.com/microsoft/azure-pipelines-agent/releases/latest | grep -i vsts-agent-linux-x64 | egrep -o 'https?://[^ "]+')"
 
 if [ -z "$AGENT_USER" ]; then
@@ -25,23 +26,29 @@ if [ -z "$AZP_ORGANIZATION" ]; then
   exit 1
 fi
 
+if [ -z "$AZP_PROJECT" ]; then
+  echo "Please provide the azp project as the 4th param"
+  exit 1
+fi
+
 if [ -z "$POOL" ]; then
-  echo "Please provide the pool as the 4rd param"
+  echo "Please provide the pool as the 5th param"
   exit 1
 fi
 
 
 if [ -z "$USE_RUNONCE" ]; then
-  echo "Please provide the run_once enable/disable (0/1) 5th param"
+  echo "Please provide the run_once enable/disable (0/1) 6th param"
   exit 1
 fi
 
 
 if [ -z "$DOCKER_NETWORK_MTU" ]; then
-  echo "Please provide the MTA as 6th param"
+  echo "Please provide the MTA as 7th param"
   exit 1
 fi
 
+export AGENT_ALLOW_RUNASROOT="1"
 echo "adding user"
 useradd $AGENT_USER -m
 usermod -a -G docker $AGENT_USER
@@ -59,7 +66,7 @@ chown $AGENT_USER:$AGENT_USER $AGENT_USER_HOME -R
 echo "configuring agent"
 # use ./config.sh --help to find more options
 # --replace to replace an agent with the same name (if we redeploy)
-su -c "cd $AGENT_INSTALL_DIR && ./config.sh --replace --unattended --acceptTeeEula --url "https://dev.azure.com/${AZP_ORGANIZATION}" --auth pat --token $AZP_TOKEN --pool $POOL --agent $AGENT_USER --runasservice" $AGENT_USER
+su -c "cd $AGENT_INSTALL_DIR && ./config.sh --replace --unattended --acceptTeeEula --url "https://dev.azure.com/${AZP_ORGANIZATION}" --auth pat --token $AZP_TOKEN --pool $POOL --agent $AGENT_USER --projectname $AZP_PROJECT" $AGENT_USER
 
 echo "Adding ENV variables for different aspects / fixes"
 # fix docker MTU or the networks created for the docker container will have the wrong (1500) MTA and thus

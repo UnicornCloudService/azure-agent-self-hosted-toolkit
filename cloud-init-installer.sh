@@ -6,6 +6,7 @@ key_vault_name=""
 vault_secret_name=""
 ado_organization=""
 ado_pool=""
+ado_project=""
 agent_count=1
 agent_run_once=1
 agent_name=$(hostname)
@@ -62,6 +63,7 @@ while [[ "$#" -gt 0 ]]; do
     --vault_secret_name) vault_secret_name="$2"; shift ;;
     --ado_organization) ado_organization="$2"; shift ;;
     --ado_pool) ado_pool="$2"; shift ;;
+    --ado_project) ado_project="$2"; shift ;;
     --agent_count) agent_count="$2"; shift ;;
     --agent_run_once) agent_run_once="$2"; shift ;;
     --agent_name) agent_name="$2"; shift ;;
@@ -71,7 +73,7 @@ while [[ "$#" -gt 0 ]]; do
   shift
 done
 
-if [[ -z "$key_vault_name" || -z "$vault_secret_name" || -z "$ado_organization" || -z "$ado_pool" ]]; then
+if [[ -z "$key_vault_name" || -z "$vault_secret_name" || -z "$ado_organization" || -z "$ado_pool" || -z "$ado_project" ]]; then
   echo "Missing required arguments."
   exit 1
 fi
@@ -82,7 +84,7 @@ pat_token=$(get_azure_secret --vault-name $key_vault_name --secret-name $vault_s
 # Install Azure DevOps agent
 if [ $agent_count == 1 ]
 then
-  /tmp/azure-agent-self-hosted-toolkit/agent-setup.sh "${agent_name}-1" $pat_token $ado_organization $ado_pool $agent_run_once $agent_mtu
+  /tmp/azure-agent-self-hosted-toolkit/agent-setup.sh "${agent_name}-1" $pat_token $ado_organization $ado_project $ado_pool $agent_run_once $agent_mtu
 else
-  /tmp/azure-agent-self-hosted-toolkit/batch-setup.sh 1 $agent_count $pat_token $ado_organization $ado_pool $agent_run_once $agent_mtu
+  /tmp/azure-agent-self-hosted-toolkit/batch-setup.sh 1 $agent_count $pat_token $ado_organization $ado_project $ado_pool $agent_run_once $agent_mtu
 fi
