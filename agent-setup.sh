@@ -81,7 +81,7 @@ cd $AGENT_USER_HOME/agent/
 if [ $USE_RUNONCE -gt 0 ]; then
   echo "Manipulating system-unit file to use agent-run-once-forever.sh"
   # this is the path patter we borrowed from svc.sh
-  SVC_NAME=`systemd-escape --path "vsts.agent.kontextwork.$POOL.$AGENT_USER.service"`
+  SVC_NAME=`systemd-escape --path "vsts.agent.$AZP_ORGANIZATION.$POOL.$AGENT_USER.service"`
   UNIT_FILE_PATH=/etc/systemd/system/${SVC_NAME}
 
   ESCAPED_RUN_ONCE_PATH='\/opt\/azure-agent-setup\/agent-run-once-forever\.sh'
